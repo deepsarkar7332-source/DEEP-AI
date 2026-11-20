@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEEP AI - Personal AI Assistant</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#070a12;color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:20px;background:#121829;
+ border-bottom:1px solid #26334c;
+ display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-size:25px;font-weight:bold;color:#00e5ff}
+.status{color:#00e5ff;font-size:12px}
+main{max-width:750px;margin:auto;padding:20px}
+.robot{
+ width:120px;height:120px;border-radius:50%;
+ margin:35px auto 15px;
+ background:radial-gradient(circle,#193b65,#101829);
+ border:3px solid #00e5ff;
+ box-shadow:0 0 30px #00b0ff;
+ display:flex;align-items:center;justify-content:center;
+ font-size:55px;
+}
+h2{text-align:center;color:#00e5ff}
+p{text-align:center;color:#aab7ca}
+.chat{
+ background:#121829;border:1px solid #26334c;
+ border-radius:15px;padding:15px;
+ min-height:280px;margin-top:25px;
+}
+.message{padding:12px;margin:10px 0;border-radius:12px;
+ background:#202c43;line-height:1.5}
+.user{background:#063e54;text-align:right}
+.controls{display:flex;gap:8px;margin-top:12px}
+input,select{
+ background:#202c43;color:white;border:1px solid #394a68;
+ border-radius:10px;padding:14px;min-width:0;
+}
+input{flex:1}
+button{
+ background:#00bfff;color:#06101c;border:0;
+ border-radius:10px;padding:13px;font-weight:bold;
+}
+.voice{background:#7c4dff;color:white}
+footer{text-align:center;color:#77849a;padding:25px}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">🤖 DEEP AI</div>
+ <div class="status">● ONLINE</div>
+</header>
+
+<main>
+ <div class="robot">🤖</div>
+ <h2>HELLO! I'M DEEP AI</h2>
+ <p>তোমার Personal AI Assistant</p>
+
+ <select id="language" style="width:100%">
+  <option value="bn-IN">বাংলা (Bengali)</option>
+  <option value="hi-IN">हिन्दी (Hindi)</option>
+  <option value="en-US">English</option>
+ </select>
+
+ <section class="chat" id="chat">
+  <div class="message">
+   নমস্কার! আমি DEEP AI। আমাকে যেকোনো প্রশ্ন করো।
+  </div>
+ </section>
+
+ <div class="controls">
+  <input id="question" placeholder="Ask DEEP AI anything...">
+  <button onclick="sendMessage()">Send</button>
+ </div>
+
+ <div class="controls">
+  <button class="voice" onclick="startVoice()">🎤 Speak</button>
+  <button onclick="speakLast()">🔊 Voice</button>
+ </div>
+</main>
+
+<footer>
+ DEEP AI © 2026 | Your Personal AI Assistant
+</footer>
+
+<script>
+let lastAnswer="";
+
+function sendMessage(){
+ const input=document.getElementById("question");
+ const q=input.value.trim();
+ if(!q)return;
+
+ const chat=document.getElementById("chat");
+ chat.innerHTML += '<div class="message user"></div>';
+ chat.lastElementChild.textContent=q;
+ input.value="";
+
+ const lang=document.getElementById("language").value;
+ let answer;
+
+ if(lang==="hi-IN"){
+  answer="नमस्ते! मैं DEEP AI हूँ। आपका सवाल मिला है। असली AI उत्तर के लिए AI सर्वर जोड़ना बाकी है।";
+ }else if(lang==="en-US"){
+  answer="Hello! I'm DEEP AI. Your question has been received. Connect an AI backend for real AI answers.";
+ }else{
+  answer="নমস্কার! তোমার প্রশ্ন পেয়েছি। আসল AI উত্তর দেওয়ার জন্য AI সার্ভার সংযোগ করা বাকি আছে।";
+ }
+
+ lastAnswer=answer;
+ chat.innerHTML += '<div class="message"></div>';
+ chat.lastElementChild.textContent=answer;
+ chat.scrollTop=chat.scrollHeight;
+}
+
+function startVoice(){
+ const SpeechRecognition=window.SpeechRecognition||
+ window.webkitSpeechRecognition;
+
+ if(!SpeechRecognition){
+  alert("এই Browser-এ Voice Recognition Support নেই।");
+  return;
+ }
+ const recognition=new SpeechRecognition();
+ recognition.lang=document.getElementById("language").value;
+ recognition.onresult=function(event){
+  document.getElementById("question").value=
+  event.results[0][0].transcript;
+  sendMessage();
+ };
+ recognition.start();
+}
+
+function speakLast(){
+ if(!lastAnswer){
+  alert("আগে একটি প্রশ্ন করো।");
+  return;
+ }
+ const speech=new SpeechSynthesisUtterance(lastAnswer);
+ speech.lang=document.getElementById("language").value;
+ speechSynthesis.speak(speech);
+}
+</script>
+</body>
+</html>
